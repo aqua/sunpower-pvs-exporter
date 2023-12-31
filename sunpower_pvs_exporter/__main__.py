@@ -36,10 +36,15 @@ def create_parser():
                              "Supervisor",
                        )
 
-    parser.add_argument("--listen-on",
+    parser.add_argument("--listen-port", "--listen-on",
                         default=9110,
                         type=int,
                         help="Listen on the specified port"
+                       )
+
+    parser.add_argument("--listen-address",
+                        default='0.0.0.0',
+                        help="Listen on the specified host address"
                        )
 
     parser.add_argument("--log-file",
@@ -93,8 +98,9 @@ def main():
                                               use_device_data_timestamp=use_ts,
                                              )
 
-    logging.info("Listening on port %d...", args.listen_on)
-    start_http_server(args.listen_on)
+    logging.info("Listening on %s:%d...",
+            args.listen_address, args.listen_port)
+    start_http_server(port=args.listen_port, addr=args.listen_address)
 
     REGISTRY.register(collector)
 
