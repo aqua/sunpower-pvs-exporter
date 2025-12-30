@@ -82,6 +82,10 @@ class SunPowerPVSupervisorCollector(object):
             delta = (datetime.now() - start).total_seconds()
             try:
                 buf = response.json()
+                if response.status_code >= 400:
+                    raise RuntimeError("HTTP response status %d" % response.status_code)
+                elif "status" in buf and buf["status"] >= 400:
+                    raise RuntimeError("inline response status %d" % buf["status"])
                 return buf
             except Exception as err:
                 logging.warning("Failed to issue command %s: %s", command, err)
